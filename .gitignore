@@ -72,6 +72,8 @@ cover/
 *.mo
 
 # Django stuff:
+# Uncomment the following line to include templates folder and its contents
+# templates/
 
 # Flask stuff:
 instance/
@@ -171,4 +173,4 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# End of https://www.toptal.com/developers/gitignore/api/django
+# End of https://www.toptal.com/developers/gitignore/api/django|
