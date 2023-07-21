@@ -15,6 +15,14 @@ declare module "@mui/material/styles" {
 
 export const createMuiTheme = () => {
     let theme = createTheme({
+
+        typography: {
+            fontFamily: [
+                'IBM Plex Mono', 'monospace',
+                'IBM Plex Sans KR', 'sans-serif'
+            ].join(","),
+        },
+
         primaryAppBar: {
             height: 50,
         },
