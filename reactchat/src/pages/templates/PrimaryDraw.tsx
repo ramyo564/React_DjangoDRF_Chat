@@ -1,13 +1,48 @@
-import { Drawer, Box, useMediaQuery, Typography, useTheme } from "@mui/material";
+import { Box, useMediaQuery, Typography, useTheme, styled } from "@mui/material";
 import { useState, useEffect } from "react";
 import DrawerToggle from "../../components/PrimaryDraw/DrawToggle";
+import MuiDrawer from "@mui/material/Drawer";
 
 const PrimaryDraw = () => {
     const theme = useTheme();
     const below600 = useMediaQuery("(max-width:599px)");
     const [open, setOpen] = useState(!below600);
 
-    console.log(below600)
+    // console.log(below600)
+
+    const openedMixin = () => ({
+        transition: theme.transitions.create("width", {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+        }),
+        overflowX: "hidden",
+    });
+
+    const closedMixin = () => ({
+        transition: theme.transitions.create("width", {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+        }),
+        overflowX: "hidden",
+        width: theme.primaryDraw.closed,
+    });
+
+    const Drawer = styled(
+        MuiDrawer,
+        {}
+    )(({theme, open}) => ({
+        width: theme.primaryDraw.width,
+        whiteSpace: "nowrap",
+        boxSizing: "border-box",
+        ...(open && {
+            ...openedMixin(),
+            "& .MuiDrawer-paper": openedMixin(),
+        }),
+        ...(!open && {
+            ...openedMixin(),
+            "& .MuiDrawer-paper": closedMixin(),
+        }),
+    }));
 
     useEffect(() => {
         setOpen(!below600);
@@ -43,7 +78,11 @@ const PrimaryDraw = () => {
                     width: open ? "auto" : "100%",
                 }}
             >
-                <DrawerToggle/>
+                <DrawerToggle 
+                    open={open}
+                    handleDrawerClose={handleDrawerClose}
+                    handleDrawerOpen={handleDrawerOpen}
+                />
                 {[...Array(50)].map((_, i)=>(
                 <Typography key={i} paragraph>
                     {i +1}
