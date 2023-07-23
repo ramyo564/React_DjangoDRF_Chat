@@ -29,8 +29,8 @@ router.register("api/server/select", ServerListViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('api/schema/ui/', SpectacularSwaggerView.as_view()),
+    path('api/docs/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/schema/ui/', SpectacularSwaggerView.as_view()),
 ] + router.urls
 
 if settings.DEBUG:

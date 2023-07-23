@@ -62,7 +62,7 @@ class Channel(models.Model):
     server = models.ForeignKey(Server, on_delete=models.CASCADE, related_name="channel_server")
     banner = models.ImageField(
         upload_to=server_banner_upload_path,
-        null=True, black=True,
+        null=True, blank=True,
         validators=[
             validate_icon_image_size, validate_image_file_exstension
             ]
