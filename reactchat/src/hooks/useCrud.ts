@@ -18,6 +18,7 @@ const useCrud = <T>(initialData: T[], apiURL: string): IuseCrud<T> => {
     const fetchData = async () => {
         setIsLoading(true)
         try{
+
             const response = await jwtAxios.get(`${BASE_URL}${apiURL}`, {})
             const data = response.data
             setDataCRUD(data)
