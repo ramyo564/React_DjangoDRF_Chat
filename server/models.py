@@ -28,6 +28,7 @@ class Category(models.Model):
             existing = get_object_or_404(Category, id=self.id)
             if existing.icon != self.icon:
                 existing.icon.delete(save=False)
+        self.name = self.name.lower()
         super(Category, self).save(*args, **kwargs)
         
         
@@ -55,7 +56,7 @@ class Server(models.Model):
         upload_to=server_banner_upload_path,
         null=True, blank=True,
         validators=[
-            validate_icon_image_size, validate_image_file_exstension
+            validate_image_file_exstension
             ]
         )
     icon = models.ImageField(
