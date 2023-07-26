@@ -35,6 +35,10 @@ export const createMuiTheme = () => {
                 'IBM Plex Mono', 'monospace',
                 'IBM Plex Sans KR', 'sans-serif'
             ].join(","),
+            body1:{
+                fontWeight: 500,
+                letterSpacing: "-0.5px",
+            },
         },
 
         primaryAppBar: {
