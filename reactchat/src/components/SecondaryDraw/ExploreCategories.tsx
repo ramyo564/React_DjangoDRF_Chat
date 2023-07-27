@@ -11,7 +11,6 @@ import {
 import useCrud from "../../hooks/useCrud";
 import { useEffect } from "react";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
 import { MEDIA_URL  } from "../../config";
 import { Link } from "react-router-dom";
 
@@ -24,6 +23,7 @@ interface Category {
 
 const ExploreCategories = () => {
     const theme = useTheme();
+    const isDarkMode = theme.palette.mode === "dark";
     const { dataCRUD, error, isLoading, fetchData } = useCrud<Category>(
         [],
         "/server/category/" 
@@ -73,7 +73,8 @@ const ExploreCategories = () => {
                                         width: "25px",
                                         height: "25px",
                                         display: "block",
-                                        margin: "auto"
+                                        margin: "auto",
+                                        filter: isDarkMode ? "invert(100%)" : "none",
                                     }}
                                 />
                             </ListItemAvatar>
