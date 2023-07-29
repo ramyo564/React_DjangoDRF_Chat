@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # Internal
     "account",
     "server",
+    "webchat",
 ]
 
 MIDDLEWARE = [

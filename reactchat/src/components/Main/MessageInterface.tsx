@@ -1,22 +1,39 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
-
 import useWebSocket from "react-use-websocket";
+import useCrud from "../../hooks/useCrud";
+import { Server } from "../../@types/server.d";
 
-
+interface Message {
+  sender: string;
+  content: string;
+  timestamp: string;
+}
 
 const messageInterface = () => {
-  const [newMessage, setNewMessage] = useState<string[]>([]);
+  const [newMessage, setNewMessage] = useState<Message[]>([]);
   const [message, setMessage] = useState("");
   const { serverId, channelId } = useParams();
+  const { fetchData } = useCrud<Server>(
+    [],
+    `/messages/?channel_id=${channelId}`
+  );
+  
   const socketUrl = channelId 
     ? `ws://127.0.0.1:8000/${serverId}/${channelId}` 
     : null ;
   
 
   const { sendJsonMessage } = useWebSocket(socketUrl, {
-    onOpen: () => {
-      console.log("Connected!");
+    onOpen: async () => {
+      try {
+        const data = await fetchData();
+        setNewMessage([]);
+        setNewMessage(Array.isArray(data) ? data : []);
+        console.log("Connected!!!");
+      } catch (error) {
+        console.log(error);
+      }
     },
     onClose: () => {
       console.log("Closed!");
@@ -32,10 +49,11 @@ const messageInterface = () => {
 
   return (
     <div>
-      {newMessage.map((msg, index) => {
+      {newMessage.map((msg: Message, index: number) => {
         return(
           <div key={index}>
-            <p>{msg}</p>
+            <p>{msg.sender}</p>
+            <p>{msg.content}</p>
           </div>
         );
       })}
