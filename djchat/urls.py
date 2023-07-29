@@ -35,7 +35,7 @@ urlpatterns = [
     path('api/docs/schema/ui/', SpectacularSwaggerView.as_view()),
 ] + router.urls
 
-websocket_urlpatterns = [path("ws/test", WebChatConsumer.as_asgi())]
+websocket_urlpatterns = [path("<str:serverId>/<str:channelId>", WebChatConsumer.as_asgi())]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

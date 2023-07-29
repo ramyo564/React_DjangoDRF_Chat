@@ -6,18 +6,21 @@ class WebChatConsumer(JsonWebsocketConsumer):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.room_name = "testserver"
+        self.channel_id = None
+        self.user = None
     
     def connect(self):
         self.accept()
+        self.channel_id = self.scope["url_route"]["kwargs"]["channelId"]
+        
         async_to_sync(self.channel_layer.group_add)(
-            self.room_name,
+            self.channel_id,
             self.channel_name,
         )
 
     def receive_json(self, content):
         async_to_sync(self.channel_layer.group_send)(
-            self.room_name,
+            self.channel_id,
             {
                 "type": "chat.message",
                 "new_message": content["message"],
