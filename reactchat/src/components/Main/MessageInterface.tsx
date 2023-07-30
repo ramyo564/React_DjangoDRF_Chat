@@ -4,6 +4,7 @@ import useWebSocket from "react-use-websocket";
 import useCrud from "../../hooks/useCrud";
 import { Server } from "../../@types/server.d";
 import { Box, Typography } from "@mui/material";
+import MessageInterfaceChannels from "./MessageInterfaceChannels";
 
 interface ServerChannelProps {
   data: Server[];
@@ -56,6 +57,7 @@ const messageInterface = (props: ServerChannelProps) => {
 
   return (
     <>
+      <MessageInterfaceChannels data={data} />
       {channelId == undefined ? (
         <Box
           sx = {{
