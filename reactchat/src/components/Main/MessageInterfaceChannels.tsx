@@ -11,11 +11,12 @@ import {
     useMediaQuery,
 } from "@mui/material";
 import { MEDIA_URL } from "../../config";
-import { Server } from "../../@types/server";
+import { Server } from "../../@types/server.d";
 import { useParams } from "react-router-dom";
 import ServerChannels from "../SecondaryDraw/ServerChannels";
 import { useEffect, useState } from "react";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 
 
 
@@ -27,7 +28,7 @@ interface ServerChannelProps {
 const MessageInterfaceChannels = (props: ServerChannelProps) => {
     const { data } = props;
     const theme = useTheme();
-    const { serverId, channelId } = useParams()
+    const { serverId, channelId } = useParams();
     const [sideMenu, setSideMenu] = useState(false);
     const channelName = 
         data
@@ -61,14 +62,15 @@ const MessageInterfaceChannels = (props: ServerChannelProps) => {
             sx = {{
                 paddingTop: `${theme.primaryAppBar.height}px`, minWidth: 200 
             }}
-            role = "presentation"
+            // role = "presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
         >
             <ServerChannels data={data}/>
         </Box>
     );
-    return <>
+    return (
+    <>
         <AppBar
             sx = {{
                 backgroundColor: theme.palette.background.default,
@@ -117,7 +119,8 @@ const MessageInterfaceChannels = (props: ServerChannelProps) => {
             </Toolbar>
 
         </AppBar>
-    </>;
+    </>
+    );
 };
 
 export default MessageInterfaceChannels;
