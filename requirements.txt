@@ -8,6 +8,7 @@ colorama==0.4.6
 Django==4.2.3
 django-cors-headers==4.2.0
 djangorestframework==3.14.0
+djangorestframework-simplejwt==5.2.2
 drf-spectacular==0.26.3
 flake8==6.0.0
 h11==0.14.0
@@ -24,6 +25,7 @@ Pillow==10.0.0
 platformdirs==3.9.1
 pycodestyle==2.10.0
 pyflakes==3.0.1
+PyJWT==2.8.0
 python-dotenv==1.0.0
 pytz==2023.3
 PyYAML==6.0
