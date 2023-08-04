@@ -6,6 +6,8 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import ToggleColorMode from "./components/ToggleColorMode";
 import Login from "./pages/Login";
 import { AuthServicProvicer } from "./context/AuthContext";
+import TestLogin from "./pages/TestLogin";
+import ProtectedRoute from "./services/ProtectedRoute";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -14,6 +16,14 @@ const router = createBrowserRouter(
       <Route path="/server/:serverId/:channelId?" element={<Server />} />
       <Route path="/explore/:categoryName" element={<Explore />} />
       <Route path="/login" element={<Login/>} />
+      <Route 
+        path="/testlogin"
+        element={
+          <ProtectedRoute>
+            <TestLogin/>
+          </ProtectedRoute>
+        } 
+      />
     </Route>
   )
 );
