@@ -5,6 +5,7 @@ import Explore from "./pages/Explore";
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom"
 import ToggleColorMode from "./components/ToggleColorMode";
 import Login from "./pages/Login";
+import { AuthServicProvicer } from "./context/AuthContext";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,9 +21,11 @@ const router = createBrowserRouter(
 const App = () => {
 
   return (
-    <ToggleColorMode>
-      <RouterProvider router={router} />
-    </ToggleColorMode>
+    <AuthServicProvicer>
+      <ToggleColorMode>
+        <RouterProvider router={router} />
+      </ToggleColorMode>
+    </AuthServicProvicer>
   );
 };
 
