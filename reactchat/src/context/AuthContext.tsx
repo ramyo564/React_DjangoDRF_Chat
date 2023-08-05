@@ -4,21 +4,22 @@ import { useAuthService } from "../services/AuthServices";
 
 const AuthServiceContext = createContext<AuthServiceProps | null>(null);
 
-export function AuthServicProvicer(props: React.PropsWithChildren<{}>) {
-    const authServices = useAuthService();
-
-    return( 
+export function AuthServiceProvider(props: React.PropsWithChildren<{}>) {
+  const authServices = useAuthService();
+  return (
     <AuthServiceContext.Provider value={authServices}>
-        {props.children}
+      {props.children}
     </AuthServiceContext.Provider>
-    );
+  );
 }
 
 export function useAuthServiceContext(): AuthServiceProps {
-    const context = useContext(AuthServiceContext);
+  const context = useContext(AuthServiceContext);
 
-    if (context === null){
-        throw new Error("Error - You have to use the AuthServiceProvider");
-    }
-    return context;
+  if (context === null) {
+    throw new Error("Error - You have to use the AuthServiceProvider");
+  }
+  return context;
 }
+
+export default AuthServiceProvider;
