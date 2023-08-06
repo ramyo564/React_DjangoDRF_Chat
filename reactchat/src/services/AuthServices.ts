@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AuthServiceProps } from "../@types/auth-service";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 
