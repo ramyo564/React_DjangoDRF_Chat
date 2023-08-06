@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAuthServiceContext } from "../context/AuthContext";
-import axios from "axios";
 import useAxiosWithInterceptor from "../helpers/jwtinterceptor";
 
 const TestLogin = () => {
