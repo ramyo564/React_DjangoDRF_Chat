@@ -11,8 +11,6 @@ user_list_docs = extend_schema(
             type=OpenApiTypes.INT,
             location=OpenApiParameter.QUERY,
             description="User ID",
-            
         ),
-
     ],
 )

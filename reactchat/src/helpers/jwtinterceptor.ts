@@ -25,7 +25,6 @@ const useAxiosWithInterceptor = (): AxiosInstance => {
                         }
                     )
                 const newAccessToken = refreshResponse.data.access
-                console.log("1")
                 localStorage.setItem("access_token", newAccessToken);
                 originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
                 return jwtAxios(originalRequest)

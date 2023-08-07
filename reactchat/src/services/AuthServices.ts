@@ -3,7 +3,6 @@ import { AuthServiceProps } from "../@types/auth-service";
 import { useState } from "react";
 
 
-
 export function useAuthService(): AuthServiceProps {
 
     const getInitialLoggedInValue = () => {
@@ -22,7 +21,7 @@ export function useAuthService(): AuthServiceProps {
     //             `http://127.0.0.1:8000/api/account/?user_id=${userId}`,{
     //             headers:{
     //                 Authorization: `Bearer ${accessToken}`
-    //             }
+    //             },
     //         });
     //         const userDetails = response.data
     //         localStorage.setItem("username", userDetails.username);
@@ -65,12 +64,10 @@ export function useAuthService(): AuthServiceProps {
     }
 
     const logout = () => {
-
         localStorage.setItem("isLoggedIn", "false")
         setIsLoggedIn(false);
 
     }
-
 
     return {login, isLoggedIn, logout}
    

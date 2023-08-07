@@ -1,123 +1,98 @@
-from django.shortcuts import render
+from django.db.models import Count
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django.db.models import Count
-from .models import Server, Category
-from .serializer import ServerSerializer, CategorySerializer
+from rest_framework.response import Response
+
+from .models import Category, Server
 from .schema import server_list_docs
-from drf_spectacular.utils import extend_schema
+from .serializer import CategorySerializer, ServerSerializer
+
 
 class CategoryListViewSet(viewsets.ViewSet):
     queryset = Category.objects.all()
-    
+
     @extend_schema(responses=CategorySerializer)
     def list(self, request):
         serializer = CategorySerializer(self.queryset, many=True)
         return Response(serializer.data)
 
-class ServerListViewSet(viewsets.ViewSet):
 
+class ServerListViewSet(viewsets.ViewSet):
     queryset = Server.objects.all()
     # permission_classes = [IsAuthenticated]
-    
+
     @server_list_docs
     def list(self, request):
-        """
-        Retrieve a list of servers based on the provided filtering options.
+        """Returns a list of servers filtered by various parameters.
 
-        This method allows you to filter and retrieve a list of servers based on various criteria.
+        This method retrieves a queryset of servers based on the query parameters
+        provided in the `request` object. The following query parameters are supported:
+
+        - `category`: Filters servers by category name.
+        - `qty`: Limits the number of servers returned.
+        - `by_user`: Filters servers by user ID, only returning servers that the user is a member of.
+        - `by_serverid`: Filters servers by server ID.
+        - `with_num_members`: Annotates each server with the number of members it has.
 
         Args:
-            request (rest_framework.request.Request): The request object containing query parameters.
+        request: A Django Request object containing query parameters.
 
         Returns:
-            rest_framework.response.Response: A serialized list of servers.
+        A queryset of servers filtered by the specified parameters.
 
         Raises:
-            rest_framework.exceptions.AuthenticationFailed:
-                If 'by_user' or 'by_serverid' is True and the user is not authenticated.
-            rest_framework.exceptions.ValidationError:
-                If 'by_serverid' is provided but the server with the given ID does not exist.
+        AuthenticationFailed: If the query includes the 'by_user' or 'by_serverid'
+            parameters and the user is not authenticated.
+        ValidationError: If there is an error parsing or validating the query parameters.
+            This can occur if the `by_serverid` parameter is not a valid integer, or if the
+            server with the specified ID does not exist.
 
-        Filtering Options:
-            - category (str, optional): Filter servers by category name.
-            - qty (int, optional): Limit the number of servers returned.
-            - by_user (bool, optional): Filter servers by the authenticated user (True) or all users (False).
-            - by_serverid (int, optional): Filter servers by their unique identifier.
-            - with_num_members (bool, optional): Include the count of members for each server (True) or not (False).
+        Examples:
+        To retrieve all servers in the 'gaming' category with at least 5 members, you can make
+        the following request:
 
-        Example:
-            1. Retrieve a list of servers belonging to the authenticated user:
-            ```
-            GET /api/servers/?by_user=true
-            ```
+            GET /servers/?category=gaming&with_num_members=true&num_members__gte=5
 
-            2. Retrieve the first 5 servers in a specific category with member count:
-            ```
-            GET /api/servers/?category=example&qty=5&with_num_members=true
-            ```
+        To retrieve the first 10 servers that the authenticated user is a member of, you can make
+        the following request:
 
-            3. Retrieve a server with a specific ID:
-            ```
-            GET /api/servers/?by_serverid=12345
-            ```
+            GET /servers/?by_user=true&qty=10
 
-        Note:
-            - The 'queryset' attribute of the 'ServerListViewSet' class should be defined with the base queryset of servers.
-            - The 'num_members' field in the 'ServerSerializer' is used to include the count of members per server when 'with_num_members' is True.
-
-        Performance Considerations:
-            - Using 'with_num_members=True' to include member counts may impact response time, especially for large datasets.
-            - Avoid using 'qty' with a large value when the queryset contains a large number of servers, as it may result in longer processing times.
-
-        Security Considerations:
-            - Ensure that only authorized users have access to this endpoint to prevent unauthorized access to sensitive server data.
-            - Validate and sanitize input parameters to prevent potential security vulnerabilities like SQL injection or other attacks.
-
-        Returns:
-            rest_framework.response.Response: A serialized list of servers matching the specified filtering options.
         """
         category = request.query_params.get("category")
-        qty = request.query_params.get('qty')
-        by_user = request.query_params.get('by_user') == "true"
+        qty = request.query_params.get("qty")
+        by_user = request.query_params.get("by_user") == "true"
         by_serverid = request.query_params.get("by_serverid")
-        with_num_members = request.query_params.get('with_num_members') == "true"
-        
+        with_num_members = request.query_params.get("with_num_members") == "true"
 
-        # Apply category filter if provided
         if category:
             self.queryset = self.queryset.filter(category__name=category)
-                
-        # Filter servers by the authenticated user
+
         if by_user:
             if by_user and request.user.is_authenticated:
                 user_id = request.user.id
                 self.queryset = self.queryset.filter(member=user_id)
             else:
                 raise AuthenticationFailed()
-            
-        # Annotate the count of members if 'with_num_members' is True
+
         if with_num_members:
             self.queryset = self.queryset.annotate(num_members=Count("member"))
 
-        # Filter servers by the provided server ID
         if by_serverid:
             # if not request.user.is_authenticated:
             #     raise AuthenticationFailed()
-        
+
             try:
                 self.queryset = self.queryset.filter(id=by_serverid)
                 if not self.queryset.exists():
-                    raise ValidationError(detail=f"Server with ID {by_serverid} not found")
+                    raise ValidationError(detail=f"Server with id {by_serverid} not found")
             except ValueError:
-                raise ValidationError(detail="Invalid server ID")
-            
-        # Limit the number of servers returned if 'qty' is provided
+                raise ValidationError(detail="Server value error")
+
         if qty:
             self.queryset = self.queryset[: int(qty)]
 
-        # Serialize the queryset and return the response
         serializer = ServerSerializer(self.queryset, many=True, context={"num_members": with_num_members})
         return Response(serializer.data)
