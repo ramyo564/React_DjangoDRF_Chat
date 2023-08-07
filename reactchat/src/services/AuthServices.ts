@@ -12,38 +12,27 @@ export function useAuthService(): AuthServiceProps {
 
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>((getInitialLoggedInValue))
     
-    // const getUserDetails = async () =>{
-    //     try {
-    //         const userId = localStorage.getItem("userId")
-    //         const accessToken = localStorage.getItem("access_token")
-    //         console.log(accessToken)
-    //         const response = await axios.get(
-    //             `http://127.0.0.1:8000/api/account/?user_id=${userId}`,{
-    //             headers:{
-    //                 Authorization: `Bearer ${accessToken}`
-    //             },
-    //         });
-    //         const userDetails = response.data
-    //         localStorage.setItem("username", userDetails.username);
-    //         setIsLoggedIn(true);
-    //         localStorage.setItem("isLoggedIn", "true")
-    //     } catch (err: any) {
-    //         setIsLoggedIn(false)
-    //         localStorage.setItem("isLoggedIn", "false")
-    //         return err;
-    //     }
-    // }
+    const getUserDetails = async () =>{
+        try {
+            const userId = localStorage.getItem("user_id")
+           
+            const response = await axios.get(
+                `http://127.0.0.1:8000/api/account/?user_id=${userId}`,
+                {
+                    withCredentials: true
+                }
+            );
+            const userDetails = response.data
+            localStorage.setItem("username", userDetails.username);
+            setIsLoggedIn(true);
+            localStorage.setItem("isLoggedIn", "true")
+        } catch (err: any) {
+            setIsLoggedIn(false)
+            localStorage.setItem("isLoggedIn", "false")
+            return err;
+        }
+    }
 
-    // const getUserIdFromToken = (access : string) => {
-    //     const token = access
-    //     const tokenParts = token.split('.')
-    //     const encodedPayLoad = tokenParts[1]
-    //     const decodedPayLoad = atob(encodedPayLoad)
-    //     const payLoadData = JSON.parse(decodedPayLoad)
-    //     const userId = payLoadData.user_id
-
-    //     return userId
-    // }
 
     const login = async (username: string, password: string) =>{
         try {
@@ -54,9 +43,12 @@ export function useAuthService(): AuthServiceProps {
             }, { withCredentials: true }
             );
 
+            // console.log(response.data)
+            const user_id = response.data.user_id
             localStorage.setItem("isLoggedIn", "true")
+            localStorage.setItem("user_id", user_id)
             setIsLoggedIn(true)
-            // getUserDetails()
+            getUserDetails()
 
         } catch (err: any) {
             return err.response.status;
@@ -65,6 +57,8 @@ export function useAuthService(): AuthServiceProps {
 
     const logout = () => {
         localStorage.setItem("isLoggedIn", "false")
+        localStorage.removeItem("user_id")
+        localStorage.removeItem("username");
         setIsLoggedIn(false);
 
     }
