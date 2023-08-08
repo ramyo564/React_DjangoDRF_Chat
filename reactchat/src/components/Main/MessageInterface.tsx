@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import useWebSocket from "react-use-websocket";
 import useCrud from "../../hooks/useCrud";
 import { Server } from "../../@types/server.d";
+import { useAuthService } from "../../services/AuthServices";
 import {
   Avatar,
   Box,
@@ -41,6 +42,7 @@ const messageInterface = (props: ServerChannelProps) => {
   const [message, setMessage] = useState("");
   const { serverId, channelId } = useParams();
   const server_name = data?.[0]?.name ?? "Server";
+  const { logout, refreshAccessToken } = useAuthService();
   const { fetchData } = useCrud<Server>(
     [],
     `/messages/?channel_id=${channelId}`
@@ -49,6 +51,9 @@ const messageInterface = (props: ServerChannelProps) => {
   const socketUrl = channelId
     ? `ws://127.0.0.1:8000/${serverId}/${channelId}`
     : null;
+
+  const [reconnectionAttempt, setReconnectionAttempt] = useState(0);
+  const maxConnectionAttempts = 4;
 
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     onOpen: async () => {
@@ -64,8 +69,15 @@ const messageInterface = (props: ServerChannelProps) => {
     onClose: (event: CloseEvent) => {
       if (event.code == 4001) {
         console.log("Authentication Error");
+        refreshAccessToken().catch((error) => {
+          if(error.response && error.response.status === 401){
+            logout();
+          
+          }
+        });
       }
       console.log("Close");
+      setReconnectionAttempt((prevAttempt) => prevAttempt + 1);
     },
     onError: () => {
       console.log("Error!");
@@ -75,6 +87,17 @@ const messageInterface = (props: ServerChannelProps) => {
       setNewMessage((prev_msg) => [...prev_msg, data.new_message]);
       setMessage("");
     },
+    shouldReconnect: (closeEvent) => {
+      if (
+        closeEvent.code === 4001 && 
+        reconnectionAttempt >= maxConnectionAttempts
+        ) {
+          setReconnectionAttempt(0);
+          return false;
+      }
+      return true;
+    },
+    reconnectInterval: 1000,
   });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
