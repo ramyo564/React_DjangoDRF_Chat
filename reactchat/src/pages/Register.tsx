@@ -26,7 +26,7 @@ const Register = () => {
       const status = await register(username, password);
       if (status === 409) {
         formik.setErrors({
-          username: "The username already exists",
+          username: "Invalid username",
         });
       } else if (status === 401) {
         console.log("Unauthorised");

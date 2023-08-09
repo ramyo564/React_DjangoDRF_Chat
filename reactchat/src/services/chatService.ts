@@ -1,4 +1,3 @@
-
 import useWebSocket from "react-use-websocket";
 import { useState } from "react";
 import { useAuthService } from "../services/AuthServices";
@@ -12,7 +11,8 @@ interface Message {
     timestamp: string;
   }
 
-const useChatWebSocket = (channelId: string, serverId: string) => {
+const useChatWebSocket = (channelId: string, serverId: string) =>{
+
     const [newMessage, setNewMessage] = useState<Message[]>([]);
     const [message, setMessage] = useState("");
     const { logout, refreshAccessToken } = useAuthService();
@@ -24,53 +24,52 @@ const useChatWebSocket = (channelId: string, serverId: string) => {
     const socketUrl = channelId
     ? `${WS_ROOT}/${serverId}/${channelId}`
     : null;
-
+    
     const [reconnectionAttempt, setReconnectionAttempt] = useState(0);
     const maxConnectionAttempts = 4;
-
+    
     const { sendJsonMessage } = useWebSocket(socketUrl, {
-    onOpen: async () => {
+      onOpen: async () => {
         try {
-        const data = await fetchData();
-        setNewMessage([]);
-        setNewMessage(Array.isArray(data) ? data : []);
-        console.log("Connected!!!");
+          const data = await fetchData();
+          setNewMessage([]);
+          setNewMessage(Array.isArray(data) ? data : []);
+          console.log("Connected!!!");
         } catch (error) {
-        console.log(error);
+          console.log(error);
         }
-    },
-    onClose: (event: CloseEvent) => {
+      },
+      onClose: (event: CloseEvent) => {
         if (event.code == 4001) {
-        console.log("Authentication Error");
-        refreshAccessToken().catch((error) => {
-            if(error.response && error.response.status === 401){
-            logout();
-            
+          console.log("Authentication Error");
+          refreshAccessToken().catch((error) => {
+            if (error.response && error.response.status === 401) {
+              logout();
             }
-        });
+          });
         }
         console.log("Close");
         setReconnectionAttempt((prevAttempt) => prevAttempt + 1);
-    },
-    onError: () => {
+      },
+      onError: () => {
         console.log("Error!");
-    },
-    onMessage: (msg) => {
+      },
+      onMessage: (msg) => {
         const data = JSON.parse(msg.data);
         setNewMessage((prev_msg) => [...prev_msg, data.new_message]);
         setMessage("");
-    },
-    shouldReconnect: (closeEvent) => {
+      },
+      shouldReconnect: (closeEvent) => {
         if (
-        closeEvent.code === 4001 && 
-        reconnectionAttempt >= maxConnectionAttempts
+          closeEvent.code === 4001 &&
+          reconnectionAttempt >= maxConnectionAttempts
         ) {
-            setReconnectionAttempt(0);
-            return false;
+          setReconnectionAttempt(0);
+          return false;
         }
         return true;
-    },
-    reconnectInterval: 1000,
+      },
+      reconnectInterval: 1000,
     });
 
     return {
@@ -79,6 +78,8 @@ const useChatWebSocket = (channelId: string, serverId: string) => {
         setMessage,
         sendJsonMessage
     }
+
 }
-  
 export default useChatWebSocket
+
+

@@ -19,7 +19,6 @@ export function useAuthService(): AuthServiceProps {
     const getUserDetails = async () =>{
         try {
             const userId = localStorage.getItem("user_id")
-           
             const response = await axios.get(
                 `http://127.0.0.1:8000/api/account/?user_id=${userId}`,
                 {
@@ -37,7 +36,6 @@ export function useAuthService(): AuthServiceProps {
         }
     }
 
-
     const login = async (username: string, password: string) =>{
         try {
             const response = await axios.post(
@@ -47,7 +45,6 @@ export function useAuthService(): AuthServiceProps {
             }, { withCredentials: true }
             );
 
-            // console.log(response.data)
             const user_id = response.data.user_id
             localStorage.setItem("isLoggedIn", "true")
             localStorage.setItem("user_id", user_id)
@@ -62,7 +59,7 @@ export function useAuthService(): AuthServiceProps {
     const refreshAccessToken = async () => {
         try {
             await axios.post(
-                `${BASE_URL}/token/refresh/` , {} , {withCredentials:true}
+                `${BASE_URL}/token/refresh/`, {} , {withCredentials:true}
             )
         } catch (refreshError) {
             return Promise.reject(refreshError)
@@ -77,13 +74,12 @@ export function useAuthService(): AuthServiceProps {
                     password,
             }, { withCredentials: true }
             );
-
             return response.status
-
         } catch (err: any) {
             return err.response.status;
         }
     }
+
 
     const logout = async () => {
         localStorage.setItem("isLoggedIn", "false")
@@ -94,7 +90,7 @@ export function useAuthService(): AuthServiceProps {
 
         try {
             await axios.post(
-                `${BASE_URL}/logout/` , {} , {withCredentials:true}
+                `${BASE_URL}/logout/`, {} , {withCredentials:true}
             )
         } catch (refreshError) {
             return Promise.reject(refreshError)

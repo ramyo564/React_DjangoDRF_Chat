@@ -1,4 +1,3 @@
-
 import {
   Avatar,
   Box,
@@ -32,21 +31,15 @@ interface Message {
   timestamp: string;
 }
 
-
 const messageInterface = (props: ServerChannelProps) => {
   const { data } = props;
   const theme = useTheme();
-  
+
   const { serverId, channelId } = useParams();
 
-  const { newMessage, message, setMessage, sendJsonMessage } = useChatWebSocket(
-    channelId || "",
-    serverId || ""
-  );
+  const { newMessage, message, setMessage, sendJsonMessage } = useChatWebSocket(channelId || "", serverId || "");
 
   const server_name = data?.[0]?.name ?? "Server";
-
-
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -180,6 +173,7 @@ const messageInterface = (props: ServerChannelProps) => {
               </List>
             </Scroll>
           </Box>
+          
           <Box sx={{ position: "sticky", bottom: 0, width: "100%" }}>
             <form
               onSubmit={handleSubmit}
