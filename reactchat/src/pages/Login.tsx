@@ -14,10 +14,10 @@ const Login = () => {
     validate: (values) => {
       const errors: Partial<typeof values> = {};
       if (!values.username) {
-        errors.username = "Required"
+        errors.username = "Required";
       }
       if (!values.password) {
-        errors.password = "Required"
+        errors.password = "Required";
       }
       return errors;
     },
@@ -36,16 +36,13 @@ const Login = () => {
     },
   });
   return (
-    <Container
-      component="main"
-      maxWidth="xs"
-    >
-      <Box 
+    <Container component="main" maxWidth="xs">
+      <Box
         sx={{
-          marginTop:8,
+          marginTop: 8,
           display: "flex",
           alignItems: "center",
-          flexDirection: "column"
+          flexDirection: "column",
         }}
       >
         <Typography
@@ -59,52 +56,41 @@ const Login = () => {
         >
           Sign in
         </Typography>
-      </Box>
-        <div>
-          <h1>Login</h1>
-          <Box component="form" onSubmit={formik.handleSubmit}
-            sx={{ mt:1 }}
+        <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
+          <TextField
+            autoFocus
+            fullWidth
+            id="username"
+            name="username"
+            label="username"
+            value={formik.values.username}
+            onChange={formik.handleChange}
+            error={!!formik.touched.username && !!formik.errors.username}
+            helperText={formik.touched.username && formik.errors.username}
+          ></TextField>
+          <TextField
+            margin="normal"
+            fullWidth
+            id="password"
+            name="password"
+            type="password"
+            label="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={!!formik.touched.password && !!formik.errors.password}
+            helperText={formik.touched.password && formik.errors.password}
+          ></TextField>
+          <Button
+            variant="contained"
+            disableElevation
+            type="submit"
+            sx={{ mt: 1, mb: 2 }}
           >
-            <TextField
-              autoFocus
-              fullWidth
-              id="username"
-              name="username"
-              label="Username"
-              value={formik.values.username}
-              onChange={formik.handleChange}
-              error={!!formik.touched.username && !! formik.errors.username}
-              helperText={formik.touched.username && formik.errors.username}
-            ></TextField>
-
-            <TextField
-              margin="normal"
-              fullWidth
-              id="password"
-              name="password"
-              label="Password"
-              type="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={!!formik.touched.password && !! formik.errors.password}
-              helperText={formik.touched.password && formik.errors.password}
-            ></TextField>
-            <Button 
-              variant="contained"
-              disableElevation
-              type="submit"
-              sx = {{
-                mt: 1,
-                mb: 2
-              }}
-            >
-              Next
-            </Button>
-          </Box>
-        </div>
-
+            Next
+          </Button>
+        </Box>
+      </Box>
     </Container>
-
   );
 };
 

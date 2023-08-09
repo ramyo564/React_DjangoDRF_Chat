@@ -68,6 +68,23 @@ export function useAuthService(): AuthServiceProps {
             return Promise.reject(refreshError)
         }
     }
+
+    const register = async (username: string, password: string) =>{
+        try {
+            const response = await axios.post(
+                "http://127.0.0.1:8000/api/register/", {
+                    username,
+                    password,
+            }, { withCredentials: true }
+            );
+
+            return response.status
+
+        } catch (err: any) {
+            return err.response.status;
+        }
+    }
+
     const logout = async () => {
         localStorage.setItem("isLoggedIn", "false")
         localStorage.removeItem("user_id")
@@ -85,6 +102,6 @@ export function useAuthService(): AuthServiceProps {
 
     }
 
-    return {login, isLoggedIn, logout, refreshAccessToken}
+    return {login, isLoggedIn, logout, refreshAccessToken, register}
    
 }
