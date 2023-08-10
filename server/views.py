@@ -12,7 +12,7 @@ from .schema import server_list_docs
 from .serializer import CategorySerializer, ServerSerializer
 
 
-class ServerMemebershipViewSet(viewsets.ViewSet):
+class ServerMembershipViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, server_id):

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useAxiosWithJwtInterceptor from "../helpers/jwtinterceptor";
 import { BASE_URL } from "../config";
-import axios from "axios";
+
 
 interface IuseServer {
     joinServer: (serverId: number) => Promise<void>;

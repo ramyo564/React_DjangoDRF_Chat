@@ -22,6 +22,7 @@ class WebChatConsumer(JsonWebsocketConsumer):
             self.close(code=4001)
 
         self.channel_id = self.scope["url_route"]["kwargs"]["channelId"]
+        self.server_id = self.scope["url_route"]["kwargs"]["serverId"]
 
         self.user = User.objects.get(id=self.user.id)
 
